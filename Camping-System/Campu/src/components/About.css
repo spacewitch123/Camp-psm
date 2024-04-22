@@ -1,0 +1,21 @@
+/* about.css */
+.About {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+
+    /* Set the height of the container to match the viewport height */
+}
+
+.background-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Ensure the video covers the entire viewport */
+    z-index: -1;
+    /* Place the video behind other content */
+}
