@@ -1,43 +1,36 @@
 import React, { useState } from 'react';
+import axios from 'axios';
+import { Link } from 'react-router-dom'; // Assuming you're using React Router for navigation
 import './Camper.css';
 
 function Camper() {
     // State for form inputs
-    const [signupData, setSignupData] = useState({ username: '', email: '', password: '' });
-    const [loginData, setLoginData] = useState({ email: '', password: '' });
+    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
     // Handle signup form submission
-    const handleSignupSubmit = (event) => {
-        event.preventDefault();
-        // Handle signup logic here
-        console.log('Signup data:', signupData);
-    };
-
-    // Handle login form submission
-    const handleLoginSubmit = (event) => {
-        event.preventDefault();
-        // Handle login logic here
-        console.log('Login data:', loginData);
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        axios.post("http://localhost:3001/signup", { username, email, password })
+            .then(result => {
+                console.log(result);
+                window.alert("Signup successful!"); // Display alert on successful signup
+            })
+            .catch(err => console.log(err));
     };
 
     return (
         <div className="Camper">
             <div className="signup-form">
-                <h2>Sign Up</h2>
-                <form onSubmit={handleSignupSubmit}>
-                    <input type="text" placeholder="Username" value={signupData.username} onChange={(e) => setSignupData({ ...signupData, username: e.target.value })} />
-                    <input type="email" placeholder="Email" value={signupData.email} onChange={(e) => setSignupData({ ...signupData, email: e.target.value })} />
-                    <input type="password" placeholder="Password" value={signupData.password} onChange={(e) => setSignupData({ ...signupData, password: e.target.value })} />
+                <h2>Camper Sign Up</h2>
+                <form onSubmit={handleSubmit}>
+                    <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
+                    <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                    <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
                     <button type="submit">Sign Up</button>
                 </form>
-            </div>
-            <div className="login-form">
-                <h2>Login</h2>
-                <form onSubmit={handleLoginSubmit}>
-                    <input type="email" placeholder="Email" value={loginData.email} onChange={(e) => setLoginData({ ...loginData, email: e.target.value })} />
-                    <input type="password" placeholder="Password" value={loginData.password} onChange={(e) => setLoginData({ ...loginData, password: e.target.value })} />
-                    <button type="submit">Login</button>
-                </form>
+                <p>Already have an account? <Link to="/CustomerLogin">Login</Link></p>
             </div>
         </div>
     );

@@ -10,7 +10,8 @@ function Navbar() {
                     <li><a href="/">Home</a></li>
                     <li><a href="/about">About</a></li>
                     <li><a href="/Camper">Camper</a></li>
-                    <li>Camp Owner</li>
+                    <li><a href="/CampownerSignup">Camper Owner</a></li>
+
 
                 </ul>
             </div>

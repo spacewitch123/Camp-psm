@@ -5,6 +5,10 @@ import Footer from "../components/Footer";
 import Home from "../components/Home";
 import About from "../components/About";
 import Camper from "../components/Camper";
+import CustomerLogin from "../components/CustomerLogin";
+import CampownerSignup from "../components/CampownerSignup";
+import CampOwnerLogin from "../components/CampownerLogin";
+import CampOwnerHome from "./CampOwner";
 
 
 const router = createBrowserRouter([
@@ -19,6 +23,22 @@ const router = createBrowserRouter([
     {
         path: '/camper',
         element: <Camper />
+    },
+    {
+        path: '/CustomerLogin',
+        element: <CustomerLogin />
+    },
+    {
+        path: '/CampownerSignup',
+        element: <CampownerSignup />
+    },
+    {
+        path: '/CampownerLogin',
+        element: <CampOwnerLogin />
+    },
+    {
+        path: '/CampOwner',
+        element: <CampOwnerHome />
     }
 ])
 function HomePage() {
