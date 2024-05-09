@@ -7,7 +7,7 @@ function CampOwnerLogin() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loginMessage, setLoginMessage] = useState('');
-
+    axios.defaults.withCredentials = true;
     // Handle login form submission
     const handleSubmit = (e) => {
         e.preventDefault();

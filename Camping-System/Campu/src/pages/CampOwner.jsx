@@ -7,9 +7,8 @@ function CampOwnerHome() {
         <div className="campowner">
             <Sidebar />
             <div className="content">
-                {/* Content for the CampOwner dashboard */}
-                {/* You can add components for "Existing Camps", "Profile", and "Earnings" here */}
                 <h2>Welcome to CampOwner Dashboard</h2>
+                <p></p>
             </div>
         </div>
     );

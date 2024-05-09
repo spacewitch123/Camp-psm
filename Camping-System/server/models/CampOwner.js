@@ -1,14 +1,14 @@
 import mongoose from 'mongoose'
 
-const Owner = new mongoose.Schema({
+const ownerSchema = new mongoose.Schema({
 
     fullName: String,
     email: String,
     phoneNumber: String,
-    password: String
+    password: String,
+
 })
 
-
-const CampownerSignupModel = mongoose.model("campowners", Owner)
+const CampownerSignupModel = mongoose.model("campowners", ownerSchema)
 
 export default CampownerSignupModel;

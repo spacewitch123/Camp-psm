@@ -1,0 +1,111 @@
+/* body {
+    margin: 0;
+    padding: 0;
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+} */
+
+.add-camp {
+    width: 80%;
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.add-camp h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 24px;
+    text-align: center;
+}
+
+.add-camp form {
+    display: flex;
+    flex-direction: column;
+}
+
+.add-camp input[type="text"],
+.add-camp input[type="number"],
+.add-camp input[type="file"] {
+    margin-bottom: 15px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.add-camp input[type="file"] {
+    cursor: pointer;
+}
+
+.add-camp button[type="submit"] {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.add-camp button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+.add-camp input[type="text"],
+.add-camp input[type="number"],
+.add-camp input[type="file"],
+.add-camp .search-location-input input {
+    margin-bottom: 15px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.add-camp input[type="file"] {
+    cursor: pointer;
+}
+
+.add-camp button[type="submit"] {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.add-camp button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+.image-thumbnails {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.thumbnail {
+    width: 100px;
+    /* Adjust the width as needed */
+    height: 100px;
+    /* Adjust the height as needed */
+    margin: 5px;
+    /* Adjust the margin as needed */
+}
