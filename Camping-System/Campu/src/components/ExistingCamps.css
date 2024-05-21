@@ -1,28 +1,69 @@
 .existing-camps {
-    margin: 0;
-    padding: 0;
-    background-size: cover;
-    background-position: center;
-    height: 100vh;
     display: flex;
-    justify-content: center;
-    align-items: center;
+}
 
+/* Sidebar styles (no changes) */
+.sidebar {
+    width: 250px;
+    background-color: black;
+    position: sticky;
+    top: 0;
+}
+
+.main-content {
+    margin-left: 20px;
+    flex: 1;
+}
+
+.existing-camps>*:not(.sidebar) {
+    margin-left: 20px;
+    /* Adjust as needed */
+    flex: 2;
+}
+
+
+.camp-card-container {
+    /* Style for the new container div */
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
 }
 
 .camp-card {
     border: 1px solid #ccc;
     border-radius: 8px;
     padding: 16px;
-    margin-bottom: 20px;
+    width: 30vh;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease-in-out;
-    position: relative;
+    text-decoration: none;
+    color: inherit;
 
 }
 
 .camp-card:hover {
     transform: scale(1.02);
+}
+
+/* Style the filter container */
+.filter-container {
+    display: flex;
+    align-items: center;
+    width: 20vh;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+}
+
+
+.filter-container label {
+    margin-right: 10px;
+    /* Add space between label and filter */
+}
+
+.filter-container select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }
 
 .image-slideshow {
@@ -46,6 +87,11 @@
     display: block;
 }
 
+.camp-card:after {
+    content: "";
+    display: table;
+    clear: both;
+}
 
 .prev,
 .next {

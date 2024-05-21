@@ -10,6 +10,10 @@ import multer from 'multer';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import cookieParser from 'cookie-parser';
+import axios from "axios";
+import { REACT_APP_GOOGLE_MAPS_KEY } from './constants.js';
+import fs from 'fs';
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -18,9 +22,28 @@ const app = express();
 
 app.use(cors({
     origin: ["http://localhost:5173"],
-    methods: ["GET", "POST"],
-    credentials: true
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization'],
 }));
+
+app.get('/api/geocode/json', (req, res) => {
+    const { latitude, longitude } = req.query;
+
+    // Construct the Google Maps API URL
+    const googleMapsApiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${REACT_APP_GOOGLE_MAPS_KEY}`;
+
+    axios
+        .get(googleMapsApiUrl) // Fetch from Google Maps API
+        .then((response) => {
+            res.json(response.data);
+        })
+        .catch((error) => {
+            console.error("Error fetching address:", error);
+            res.status(500).json({ error: 'Error fetching address' });
+        });
+});
+
 
 app.use(express.json());
 app.use(cookieParser());
@@ -119,21 +142,32 @@ app.post("/loginowner", async (req, res) => {
     }
 });
 
-app.post("/logout", (req, res) => {
+app.get("/logout", (req, res) => {
     const token = req.cookies.token;
     if (token) {
-        // Add token to the blacklist
-        tokenBlacklist.add(token);
-        // Clear the token cookie from the response
-        res.clearCookie('token');
+        // Remove the token from the cookies object
+        res.cookie('token', '', { maxAge: 0, httpOnly: true });
         res.json({ message: 'Logout successful' });
     } else {
         res.status(400).json({ error: 'No token found' });
     }
 });
 
+
 app.post("/NewCamp", verifyToken, upload.array('images', 10), async (req, res) => {
-    const { campName, capacity, price, latitude, longitude } = req.body;
+    const {
+        campName,
+        capacity,
+        price,
+        latitude,
+        longitude,
+        campType,          // New fields from the form
+        numberOfUnits,
+        description,
+        phoneNumber,
+        socialMedia,
+        amenities: amenitiesString // Get amenities as a string
+    } = req.body;
 
     // Check if req.files exists and if it contains an 'images' property
     if (!req.files || !req.files.length) {
@@ -146,7 +180,10 @@ app.post("/NewCamp", verifyToken, upload.array('images', 10), async (req, res) =
         // Construct URLs for the images
         const imageUrls = images.map(filename => `/images/${filename}`);
 
-        // Create a new camp with the image URLs
+        // Parse the amenities string into an array (if it's not empty)
+        const amenities = amenitiesString ? JSON.parse(amenitiesString) : [];
+
+        // Create a new camp with the image URLs and new fields
         const newCamp = await NewCampModel.create({
             campName,
             capacity,
@@ -154,7 +191,13 @@ app.post("/NewCamp", verifyToken, upload.array('images', 10), async (req, res) =
             latitude,
             longitude,
             images: imageUrls,
-            owner: req.userId // Set the owner field to the ID of the camp owner
+            owner: req.userId,
+            campType,        // Save the new fields
+            numberOfUnits,
+            description,
+            phoneNumber,
+            socialMedia,
+            amenities
         });
 
         // Update the camp owner's document to include the ID of the newly created camp
@@ -166,6 +209,8 @@ app.post("/NewCamp", verifyToken, upload.array('images', 10), async (req, res) =
     }
 });
 
+
+
 app.get("/ExistingCamps", verifyToken, async (req, res) => {
     try {
         const campOwnerId = req.userId; // Assuming req.userId holds the camp owner's ID
@@ -173,6 +218,145 @@ app.get("/ExistingCamps", verifyToken, async (req, res) => {
         res.json(existingCamps);
     } catch (error) {
         res.status(500).json({ error: "Server error" });
+    }
+});
+
+// Get a single camp by ID
+app.get("/camps/:id", verifyToken, async (req, res) => {
+    try {
+        const camp = await NewCampModel.findById(req.params.id);
+        if (!camp) {
+            return res.status(404).json({ error: "Camp not found" });
+        }
+        res.json(camp);
+    } catch (error) {
+        res.status(500).json({ error: "Server error" });
+    }
+});
+
+// Update a camp by ID
+app.put("/camps/:id", verifyToken, async (req, res) => {
+    try {
+        const updatedCamp = await NewCampModel.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (!updatedCamp) {
+            return res.status(404).json({ error: "Camp not found" });
+        }
+        res.json(updatedCamp);
+    } catch (error) {
+        res.status(500).json({ error: "Server error" });
+    }
+});
+
+// Delete a camp by ID
+app.delete("/camps/:id", verifyToken, async (req, res) => {
+    try {
+        const deletedCamp = await NewCampModel.findByIdAndDelete(req.params.id);
+        if (!deletedCamp) {
+            return res.status(404).json({ error: "Camp not found" });
+        }
+        res.json({ message: "Camp deleted successfully" });
+    } catch (error) {
+        res.status(500).json({ error: "Server error" });
+    }
+});
+
+const profilePictureStorage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'public/profile_pictures');
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + '-' + file.originalname);
+    }
+});
+const profilePictureUpload = multer({ storage: profilePictureStorage });
+
+app.get('/profile', verifyToken, async (req, res) => {
+    try {
+        const campowner = await CampownerSignupModel.findById(req.userId);
+        if (!campowner) {
+            return res.status(404).json({ error: 'Camp owner not found' });
+        }
+        res.json({
+            fullName: campowner.fullName,
+            email: campowner.email,
+            phoneNumber: campowner.phoneNumber,
+            profilePicture: campowner.profilePicture
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.post('/Profilepicture', verifyToken, profilePictureUpload.single('profilePicture'), async (req, res) => {
+    try {
+        const campowner = await CampownerSignupModel.findById(req.userId);
+        if (!campowner) {
+            return res.status(404).json({ error: 'Camp owner not found' });
+        }
+
+        if (campowner.profilePicture) {
+            fs.unlinkSync('public/profile_pictures/' + campowner.profilePicture);
+        }
+
+        campowner.profilePicture = req.file.filename;
+        await campowner.save();
+        res.json({ message: 'Profile picture updated successfully' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.post('/Changepassword', verifyToken, async (req, res) => {
+    const { currentPassword, newPassword } = req.body;
+
+    try {
+        const campowner = await CampownerSignupModel.findById(req.userId);
+        if (!campowner) {
+            return res.status(404).json({ error: 'Camp owner not found' });
+        }
+
+        const isMatch = bcrypt.compare(currentPassword, campowner.password);
+        if (!isMatch) {
+            return res.status(401).json({ error: 'Incorrect current password' });
+        }
+
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+
+        campowner.password = hashedPassword;
+        await campowner.save();
+
+        res.json({ message: 'Password updated successfully' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.delete('/removeProfilePicture', verifyToken, async (req, res) => {
+    try {
+        const campowner = await CampownerSignupModel.findById(req.userId);
+        if (!campowner) {
+            return res.status(404).json({ error: 'Camp owner not found' });
+        }
+
+        if (campowner.profilePicture) {
+            const profilePicturePath = path.join(__dirname, 'public/profile_pictures', campowner.profilePicture);
+            fs.unlink(profilePicturePath, (err) => {
+                if (err) {
+                    console.error('Error removing profile picture:', err);
+                    return res.status(500).json({ error: 'Error removing profile picture' });
+                }
+                campowner.profilePicture = null;
+                campowner.save()
+                    .then(() => res.json({ message: 'Profile picture removed successfully' }))
+                    .catch(error => res.status(500).json({ error: 'Error saving profile changes' }));
+            });
+        } else {
+            res.status(400).json({ error: 'No profile picture to remove' });
+        }
+    } catch (error) {
+        console.error('Error removing profile picture:', error);
+        res.status(500).json({ error: 'Server error' });
     }
 });
 

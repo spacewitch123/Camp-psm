@@ -6,16 +6,15 @@ function Sidebar() {
     axios.defaults.withCredentials = true;
     // Function to handle logout
     const handleLogout = async () => {
-        try {
-            // Send a POST request to the logout endpoint
-            await axios.post('/logout');
-            // Clear the token from the browser's cookies
-            document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-            // Redirect to the home page
-            window.location.href = '/';
-        } catch (error) {
-            console.error('Logout failed:', error);
-            // Handle logout failure
+        // Ask for confirmation
+        if (window.confirm('Are you sure you want to logout?')) {
+            try {
+                await axios.get('http://localhost:3001/logout', { withCredentials: true });
+                // Redirect to the home page after logout
+                window.location.href = '/';
+            } catch (error) {
+                console.error('Logout failed:', error);
+            }
         }
     };
 
@@ -23,7 +22,7 @@ function Sidebar() {
         <div className="sidebar">
             <h2>Camp Owner Dashboard</h2>
             <ul>
-                <li><a href="#">Profile</a></li>
+                <li><a href="/Profile">Profile</a></li>
                 <li><a href="/AddCamps">Add Camps</a></li>
                 <li><a href="/ExistingCamps">Existing Camps</a></li>
                 <li><a href="#">Earnings</a></li>
