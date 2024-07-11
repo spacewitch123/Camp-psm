@@ -1,0 +1,49 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.Navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    /* Adjust as needed */
+    background-color: #b68484;
+    /* Example background color */
+    color: #000000;
+    /* Example text color */
+}
+
+.Title {
+    font-size: 24px;
+    font-weight: bold;
+    color: rgb(92, 83, 142);
+    letter-spacing: 3px;
+    font-family: Bebas Neue;
+    cursor: pointer;
+}
+
+.options ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.options ul li {
+    display: inline-block;
+    /* Display list items horizontally */
+    margin-right: 10px;
+
+    font-family: Bebas Neue;
+    cursor: pointer;
+    font-size: larger;
+    /* Adjust spacing between list items */
+}
+
+.options ul li:last-child {
+    margin-right: 0;
+    /* Remove margin from last list item */
+}
