@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './Profile.css'; // Create a CSS file for styling
 import Sidebar from './Sidebar';
 
 function Profile() {
@@ -82,63 +81,89 @@ function Profile() {
     };
 
     if (isLoading) {
-        return <div>Loading profile...</div>;
+        return <div className="flex justify-center items-center h-screen">Loading profile...</div>;
     }
 
     if (error) {
-        return <div className="error-message">{error}</div>;
+        return <div className="flex justify-center items-center h-screen text-red-500">{error}</div>;
     }
 
     return (
-        <div className="app-container">
+        <div className="flex min-h-screen">
             <Sidebar />
-            <div className="main-content">
-                <div className="profile-container">
-                    <h2>My Profile</h2>
-
-                    <div className="profile-picture">
-                        {profileData.profilePicture ? (
-                            <>
-                                <img src={`http://localhost:3001/profile_pictures/${profileData.profilePicture}`} alt="Profile" />
-                                <button onClick={handleProfilePictureRemove}>Remove</button>
-                            </>
-                        ) : (
-                            <>
-                                <input type="file" accept="image/*" onChange={handleProfilePictureChange} />
-                                <button onClick={handleProfilePictureUpload}>Upload</button>
-                            </>
-                        )}
+            <div className="flex-1 p-6">
+                <div className="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-md">
+                    <h2 className="text-2xl font-bold mb-4">My Profile</h2>
+                    <div className="mb-4">
+                        <div className="flex flex-col items-center">
+                            {profileData.profilePicture ? (
+                                <div className="flex flex-col items-center">
+                                    <img
+                                        src={`http://localhost:3001/images/${profileData.profilePicture}`}
+                                        alt="Profile"
+                                        className="w-32 h-32 rounded-full object-cover mb-4"
+                                    />
+                                    <button
+                                        onClick={handleProfilePictureRemove}
+                                        className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                                    >
+                                        Remove
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="flex flex-col items-center">
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleProfilePictureChange}
+                                        className="mb-4"
+                                    />
+                                    <button
+                                        onClick={handleProfilePictureUpload}
+                                        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                                    >
+                                        Upload
+                                    </button>
+                                </div>
+                            )}
+                        </div>
                     </div>
-
-                    <div className="profile-info">
-                        <p><strong>Full Name:</strong> {profileData.fullName}</p>
-                        <p><strong>Email:</strong> {profileData.email}</p>
-                        <p><strong>Phone Number:</strong> {profileData.phoneNumber}</p>
+                    <div className="mb-4">
+                        <p className="text-lg"><strong>Full Name:</strong> {profileData.fullName}</p>
+                        <p className="text-lg"><strong>Email:</strong> {profileData.email}</p>
+                        <p className="text-lg"><strong>Phone Number:</strong> {profileData.phoneNumber}</p>
                     </div>
-
-                    <div className="password-change">
+                    <div className="mb-4">
+                        <h3 className="text-xl font-bold mb-2">Change Password</h3>
                         <input
                             type="password"
                             placeholder="Current Password"
                             value={currentPassword}
                             onChange={(e) => setCurrentPassword(e.target.value)}
+                            className="w-full p-2 border border-gray-300 rounded mb-2"
                         />
                         <input
                             type="password"
                             placeholder="New Password"
                             value={newPassword}
                             onChange={(e) => setNewPassword(e.target.value)}
+                            className="w-full p-2 border border-gray-300 rounded mb-2"
                         />
                         <input
                             type="password"
                             placeholder="Confirm Password"
                             value={confirmPassword}
                             onChange={(e) => setConfirmPassword(e.target.value)}
+                            className="w-full p-2 border border-gray-300 rounded mb-2"
                         />
-                        <button onClick={handlePasswordChange}>Change Password</button>
+                        <button
+                            onClick={handlePasswordChange}
+                            className="w-full bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                        >
+                            Change Password
+                        </button>
                     </div>
-
-                    {updateSuccess && <div className="success-message">{updateSuccess}</div>}
+                    {updateSuccess && <div className="text-green-500">{updateSuccess}</div>}
                 </div>
             </div>
         </div>

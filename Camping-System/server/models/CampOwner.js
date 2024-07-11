@@ -5,7 +5,9 @@ const ownerSchema = new mongoose.Schema({
     email: String,
     phoneNumber: String,
     password: String,
-    profilePicture: String, // New field for storing the file name of the profile picture
+    profilePicture: String,
+    certificate: String, // Field to store the file name of the certificate
+    isApproved: { type: Boolean, default: false } // Field to store approval status
 });
 
 const CampownerSignupModel = mongoose.model("campowners", ownerSchema);
