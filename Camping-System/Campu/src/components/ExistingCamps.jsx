@@ -44,7 +44,6 @@ function ExistingCamps() {
                         <option value="Stay Home">Stay Home</option>
                     </select>
                 </div>
-
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {filteredCamps.map((camp) => (
                         <div key={camp._id} className="bg-white p-4 rounded-lg shadow-md">
